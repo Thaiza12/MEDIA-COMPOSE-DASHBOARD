@@ -1,0 +1,63 @@
+# docker-compose.yml
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: globo2-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: globo2_db
+      DB_USER: globo_user
+      DB_PASSWORD: 123456
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ./arquivos:/app/arquivos   # pasta monitorada pelo watchdog
+    depends_on:
+      postgres:
+        condition: service_healthy  # espera o postgres estar PRONTO de verdade
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: globo2-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: globo2_db
+      POSTGRES_USER: globo_user
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U globo_user -d globo2_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7
+    container_name: globo2-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:

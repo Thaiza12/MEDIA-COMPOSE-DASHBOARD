@@ -1,4 +1,3 @@
-# MEDIA-COMPOSE-DASHBOARD
 # **Media Compose Dashboard: Monitoramento e Inteligência para Ilhas de Edição**
 
 Este projeto é um ecossistema inteligente projetado para transformar a atividade bruta das ilhas de edição em dados estratégicos e previsões em tempo real. Ele resolve o desafio de gestores que precisam saber quem está operando, em qual projeto e, principalmente, quando o trabalho será concluído, sem interromper o fluxo criativo dos editores.
